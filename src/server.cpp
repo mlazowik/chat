@@ -1,6 +1,8 @@
 #include <iostream>
 #include <stdexcept>
+
 #include "server_options.h"
+#include "socket.h"
 
 int main(int argc, char* argv[]) {
     const int DEFAULT_PORT = 20160;
@@ -23,7 +25,14 @@ int main(int argc, char* argv[]) {
 
     int port = options.getPort();
 
-    std::cout << port << "\n";
+    Socket s;
+
+    s.setPort(port);
+    s.startListening();
+
+    while (true) {
+        Socket connection = s.acceptConnection();
+    }
 
     return 0;
 }
