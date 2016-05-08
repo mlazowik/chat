@@ -1,30 +1,23 @@
 #include <iostream>
 #include <stdexcept>
+#include "server_options.h"
 
 using namespace std;
 
 const int DEFAULT_PORT = 20160;
 
-void print_usage(std::ostream &out) {
-    out << "Usage: server [PORT]\n";
-}
-
 int main(int argc, char* argv[]) {
-    int port = DEFAULT_PORT;
+    ServerOptions options = ServerOptions(argc, argv);
 
     try {
-        if (argc > 2) {
-            throw std::invalid_argument("too many arguments");
-        }
-
-        if (argc == 2) {
-            port = std::stoi(argv[1]);
-        }
+        options.parse();
     } catch(std::invalid_argument &ex) {
         std::cerr << "Invalid argument: " << ex.what() << "\n";
-        print_usage(std::cerr);
+        options.printUsage(std::cerr);
         exit(EXIT_FAILURE);
     }
+
+    int port = options.getPort();
 
     cout << port << "\n";
 
