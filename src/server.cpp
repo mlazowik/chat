@@ -9,7 +9,7 @@ int main(int argc, char* argv[]) {
         options.parse();
     } catch(std::invalid_argument &ex) {
         std::cerr << "Invalid argument: " << ex.what() << "\n";
-        options.printUsage(std::cerr);
+        std::cerr << options.getUsage() << "\n";
         exit(EXIT_FAILURE);
     }
 

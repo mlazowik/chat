@@ -6,9 +6,9 @@
 class ServerOptions : Options {
 public:
     ServerOptions(int arguments_count, char** arguments);
-    void parse() final;
+    void parse();
     int getPort();
-    void printUsage(std::ostream &out);
+    std::string getUsage();
 
 private:
     int arguments_count;

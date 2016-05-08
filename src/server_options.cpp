@@ -24,6 +24,6 @@ int ServerOptions::getPort() {
     return this->port;
 }
 
-void ServerOptions::printUsage(std::ostream &out) {
-    out << "Usage: server [PORT]\n";
+std::string ServerOptions::getUsage() {
+    return "Usage: server [PORT]";
 }
