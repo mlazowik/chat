@@ -2,14 +2,17 @@ cmake_minimum_required(VERSION 2.8)
 
 project(chat)
 
-if(CMAKE_CXX_COMPILER_ID MATCHES GNU)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -fprofile-arcs -ftest-coverage")
-    set(CMAKE_CXX_FLAGS_DEBUG "-O0 -g3")
-    set(CMAKE_CXX_FLAGS_RELEASE "-O2")
-endif()
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -fprofile-arcs -ftest-coverage")
+set(CMAKE_CXX_FLAGS_DEBUG "-O0 -g3")
+set(CMAKE_CXX_FLAGS_RELEASE "-O2")
 
 include_directories(
         ${PROJECT_SOURCE_DIR}/src
+)
+
+add_library(
+        server_options
+        src/server_options.cpp
 )
 
 set(GOOGLETEST_ROOT lib/googletest/googletest CACHE STRING "Google Test source root")
@@ -29,7 +32,7 @@ endforeach()
 
 add_library(googletest ${GOOGLETEST_SOURCES})
 
-set(SOURCE_TEST_FILES test/main.cpp)
+set(SOURCE_TEST_FILES test/main.cpp test/test_server_options.cpp)
 add_executable(unit_tests ${SOURCE_TEST_FILES})
 
 add_dependencies(unit_tests googletest)
@@ -37,6 +40,7 @@ add_dependencies(unit_tests googletest)
 target_link_libraries(
         unit_tests
         googletest
+        server_options
         pthread
 )
 

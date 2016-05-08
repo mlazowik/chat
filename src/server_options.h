@@ -1,20 +1,19 @@
 #ifndef CHAT_SERVER_OPTIONS_H
 #define CHAT_SERVER_OPTIONS_H
 
+#include <string>
+#include <vector>
 #include "options.h"
 
 class ServerOptions : Options {
 public:
-    ServerOptions(int arguments_count, char** arguments);
+    ServerOptions(std::vector<std::string>, int defaultPort);
     void parse();
     int getPort();
     std::string getUsage();
 
 private:
-    int arguments_count;
-    char** arguments;
-
-    const int DEFAULT_PORT = 20160;
+    std::vector<std::string> arguments;
 
     int port;
 };
