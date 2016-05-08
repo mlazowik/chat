@@ -2,10 +2,6 @@
 #include <stdexcept>
 #include "server_options.h"
 
-using namespace std;
-
-const int DEFAULT_PORT = 20160;
-
 int main(int argc, char* argv[]) {
     ServerOptions options = ServerOptions(argc, argv);
 
@@ -19,7 +15,7 @@ int main(int argc, char* argv[]) {
 
     int port = options.getPort();
 
-    cout << port << "\n";
+    std::cout << port << "\n";
 
     return 0;
 }
