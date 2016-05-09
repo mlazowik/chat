@@ -49,11 +49,14 @@ int main(int argc, char* argv[]) {
             ssize_t rval = read(socket.getDescriptor(), buf, BUF_SIZE);
 
             if (rval < 0) {
+                events.deregisterSocket(socket);
+                socket.destroy();
                 throw std::system_error(errno, std::system_category());
             }
 
             if (rval == 0) {
                 events.deregisterSocket(socket);
+                socket.destroy();
             } else {
                 printf("-->%.*s\n", (int) rval, buf);
             }
