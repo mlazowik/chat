@@ -2,6 +2,7 @@
 #define CHAT_STREAM_H
 
 #include <cstddef>
+#include <stdexcept>
 
 class stream_closed_error : public std::runtime_error {
 public:

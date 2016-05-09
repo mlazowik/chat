@@ -71,6 +71,20 @@ set(CLIENT_SOURCE_FILES
         src/client.cpp
         src/client_options.cpp
         src/client_options.h
-        src/options.h)
+        src/options.h
+        src/socket.cpp
+        src/socket.h
+        src/io_events.cpp
+        src/io_events.h
+        src/stream_reader.cpp
+        src/stream_reader.h
+        src/stream.h
+        src/connection.cpp
+        src/connection.h
+        src/chat_client.cpp
+        src/chat_client.h
+        src/connection.cpp
+        src/connection.h
+        src/descriptor.h)
 
 add_executable(client ${CLIENT_SOURCE_FILES})
