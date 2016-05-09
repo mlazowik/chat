@@ -5,7 +5,7 @@
 #include <vector>
 #include "options.h"
 
-class ServerOptions : Options {
+class ServerOptions : public Options {
 public:
     ServerOptions(std::vector<std::string>, int defaultPort);
     void parse();
