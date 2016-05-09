@@ -63,14 +63,13 @@ int main(int argc, char* argv[]) {
                 socket.destroy();
                 clients.erase(socket);
             } else {
-                std::cout << "me: " << socket.getDescriptor() << "\n";
-                std::cout << "others:";
                 for (const Socket &client : clients) {
                     if (client != socket) {
-                        std::cout << " " << client.getDescriptor();
+                        if (write(client.getDescriptor(), buf, rval) < 0) {
+                            throw std::system_error(errno, std::system_category());
+                        }
                     }
                 }
-                std::cout << "\n";
             }
         });
     });
