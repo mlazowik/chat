@@ -16,7 +16,7 @@ IOEvents::IOEvents(size_t size) {
     }
 }
 
-void IOEvents::registerSocket(Socket &socket, std::function<void(Socket, short)> callback) {
+void IOEvents::registerSocket(Socket &socket, std::function<void(Socket&, short)> callback) {
     size_t i = 0;
     struct pollfd *descriptor;
 

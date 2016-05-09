@@ -1,14 +1,10 @@
 #include <iostream>
 #include <stdexcept>
-#include <system_error>
-#include <unistd.h>
-#include <set>
 
 #include "server_options.h"
 #include "socket.h"
 #include "io_events.h"
-
-#define BUF_SIZE 1024
+#include "chat_server.h"
 
 int main(int argc, char* argv[]) {
     const int DEFAULT_PORT = 20160;
@@ -32,51 +28,14 @@ int main(int argc, char* argv[]) {
     int port = options.getPort();
 
     Socket master;
-    std::set<Socket> clients;
 
     master.setPort(port);
     master.startListening();
 
     IOEvents events(20);
 
-    events.registerSocket(master, [&](Socket socket, short revents) {
-        if (!(revents & POLLIN)) return;
-
-        Socket client = master.acceptConnection();
-        clients.insert(client);
-
-        events.registerSocket(client, [&](Socket socket, short revents) {
-            if (!(revents & (POLLIN | POLLERR))) return;
-
-            char buf[BUF_SIZE];
-            ssize_t rval = read(socket.getDescriptor(), buf, BUF_SIZE);
-
-            if (rval < 0) {
-                events.deregisterSocket(socket);
-                socket.destroy();
-                clients.erase(socket);
-                throw std::system_error(errno, std::system_category());
-            }
-
-            if (rval == 0) {
-                events.deregisterSocket(socket);
-                socket.destroy();
-                clients.erase(socket);
-            } else {
-                for (const Socket &client : clients) {
-                    if (client != socket) {
-                        if (write(client.getDescriptor(), buf, rval) < 0) {
-                            throw std::system_error(errno, std::system_category());
-                        }
-                    }
-                }
-            }
-        });
-    });
-
-    while (true) {
-         events.processEvents();
-    }
+    ChatServer server(master, events);
+    server.run();
 
     return 0;
 }
