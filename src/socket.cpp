@@ -13,12 +13,6 @@ Socket::Socket() {
     }
 }
 
-Socket::~Socket() {
-    if (close(this->descriptor < 0)) {
-        throw std::system_error(errno, std::system_category());
-    }
-}
-
 int Socket::getDescriptor() {
     return this->descriptor;
 }
@@ -52,4 +46,10 @@ Socket Socket::acceptConnection() {
     }
 
     return Socket(connectionDescriptor);
+}
+
+void Socket::destroy() {
+    if (close(this->descriptor < 0)) {
+        throw std::system_error(errno, std::system_category());
+    }
 }

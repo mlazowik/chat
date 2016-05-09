@@ -16,7 +16,7 @@ IOEvents::IOEvents(size_t size) {
     }
 }
 
-void IOEvents::registerSocket(Socket &socket, std::function<void(short)> callback) {
+void IOEvents::registerSocket(Socket &socket, std::function<void(Socket, short)> callback) {
     size_t i = 0;
     struct pollfd *descriptor;
 
@@ -33,6 +33,7 @@ void IOEvents::registerSocket(Socket &socket, std::function<void(short)> callbac
 
     descriptor->fd = socket.getDescriptor();
     this->callbacks[i] = callback;
+    this->sockets.emplace(i, socket);
 }
 
 void IOEvents::deregisterSocket(Socket &socket) {
@@ -51,7 +52,8 @@ void IOEvents::deregisterSocket(Socket &socket) {
     i--;
 
     descriptor->fd = -1;
-    this->callbacks[i] = 0;
+    this->callbacks.erase(i);
+    this->sockets.erase(i);
 }
 
 void IOEvents::processEvents() {
@@ -66,7 +68,7 @@ void IOEvents::processEvents() {
             struct pollfd *descriptor = this->descriptors + i;
 
             if (descriptor->fd != -1 && descriptor->revents != 0) {
-                this->callbacks[i](descriptor->revents);
+                this->callbacks[i](this->sockets[i], descriptor->revents);
             }
         }
     }

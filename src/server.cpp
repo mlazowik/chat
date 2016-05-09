@@ -30,37 +30,38 @@ int main(int argc, char* argv[]) {
 
     int port = options.getPort();
 
-    Socket s;
+    Socket master;
 
-    s.setPort(port);
-    s.startListening();
+    master.setPort(port);
+    master.startListening();
 
     IOEvents events(20);
-    char buf[BUF_SIZE];
 
-    while (true) {
-        Socket connection = s.acceptConnection();
+    events.registerSocket(master, [&](Socket socket, short revents) {
+        if (!(revents & POLLIN)) return;
 
-        bool active = true;
+        Socket client = master.acceptConnection();
 
-        events.registerSocket(connection, [&](short revents) {
-            ssize_t rval = read(connection.getDescriptor(), buf, BUF_SIZE);
+        events.registerSocket(client, [&](Socket socket, short revents) {
+            if (!(revents & (POLLIN | POLLERR))) return;
+
+            char buf[BUF_SIZE];
+            ssize_t rval = read(socket.getDescriptor(), buf, BUF_SIZE);
 
             if (rval < 0) {
                 throw std::system_error(errno, std::system_category());
             }
 
             if (rval == 0) {
-                events.deregisterSocket(connection);
-                active = false;
+                events.deregisterSocket(socket);
+            } else {
+                printf("-->%.*s\n", (int) rval, buf);
             }
-
-            printf("-->%.*s\n", (int) rval, buf);
         });
+    });
 
-        while (active) {
-            events.processEvents();
-        }
+    while (true) {
+         events.processEvents();
     }
 
     return 0;

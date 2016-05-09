@@ -4,11 +4,11 @@
 class Socket {
 public:
     Socket();
-    ~Socket();
     int getDescriptor();
     void setPort(int port);
     void startListening();
     Socket acceptConnection();
+    void destroy();
 
 private:
     Socket(int descriptor);
