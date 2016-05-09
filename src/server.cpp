@@ -2,6 +2,7 @@
 #include <stdexcept>
 #include <system_error>
 #include <unistd.h>
+#include <set>
 
 #include "server_options.h"
 #include "socket.h"
@@ -31,6 +32,7 @@ int main(int argc, char* argv[]) {
     int port = options.getPort();
 
     Socket master;
+    std::set<Socket> clients;
 
     master.setPort(port);
     master.startListening();
@@ -41,6 +43,7 @@ int main(int argc, char* argv[]) {
         if (!(revents & POLLIN)) return;
 
         Socket client = master.acceptConnection();
+        clients.insert(client);
 
         events.registerSocket(client, [&](Socket socket, short revents) {
             if (!(revents & (POLLIN | POLLERR))) return;
@@ -51,14 +54,23 @@ int main(int argc, char* argv[]) {
             if (rval < 0) {
                 events.deregisterSocket(socket);
                 socket.destroy();
+                clients.erase(socket);
                 throw std::system_error(errno, std::system_category());
             }
 
             if (rval == 0) {
                 events.deregisterSocket(socket);
                 socket.destroy();
+                clients.erase(socket);
             } else {
-                printf("-->%.*s\n", (int) rval, buf);
+                std::cout << "me: " << socket.getDescriptor() << "\n";
+                std::cout << "others:";
+                for (const Socket &client : clients) {
+                    if (client != socket) {
+                        std::cout << " " << client.getDescriptor();
+                    }
+                }
+                std::cout << "\n";
             }
         });
     });

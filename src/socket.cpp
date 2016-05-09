@@ -13,7 +13,7 @@ Socket::Socket() {
     }
 }
 
-int Socket::getDescriptor() {
+int Socket::getDescriptor() const {
     return this->descriptor;
 }
 
@@ -52,4 +52,20 @@ void Socket::destroy() {
     if (close(this->descriptor < 0)) {
         throw std::system_error(errno, std::system_category());
     }
+}
+
+bool Socket::operator==(const Socket &rhs) const {
+    return this->getDescriptor() == rhs.getDescriptor();
+}
+
+bool Socket::operator!=(const Socket &rhs) const {
+    return !(*this == rhs);
+}
+
+bool Socket::operator<(const Socket &rhs) const {
+    return this->getDescriptor() < rhs.getDescriptor();
+}
+
+bool Socket::operator>(const Socket &rhs) const {
+    return !(*this < rhs || *this == rhs);
 }

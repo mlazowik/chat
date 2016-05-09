@@ -4,11 +4,16 @@
 class Socket {
 public:
     Socket();
-    int getDescriptor();
+    int getDescriptor() const;
     void setPort(int port);
     void startListening();
     Socket acceptConnection();
     void destroy();
+
+    bool operator==(const Socket &rhs) const;
+    bool operator!=(const Socket &rhs) const;
+    bool operator<(const Socket &rhs) const;
+    bool operator>(const Socket &rhs) const;
 
 private:
     Socket(int descriptor);
@@ -17,6 +22,7 @@ private:
 
     const int BACKLOG_QUEUE_LENGTH = 5;
 };
+
 
 
 #endif //CHAT_SOCKET_H
