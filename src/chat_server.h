@@ -14,6 +14,8 @@ private:
     void handleServerEvent(Socket &socket, short revents);
     void handleClientEvent(Socket &socket, short revents);
 
+    void disconnectClient(Socket &socket);
+
     Socket serverSocket;
     IOEvents events;
 

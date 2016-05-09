@@ -22,7 +22,7 @@ void ChatServer::handleServerEvent(Socket &socket, short revents) {
     Socket client = this->serverSocket.acceptConnection();
     clients.insert(client);
 
-    events.registerSocket(client, [&](Socket &socket, short revents) {
+    this->events.registerSocket(client, [&](Socket &socket, short revents) {
         this->handleClientEvent(socket, revents);
     });
 }
@@ -34,16 +34,12 @@ void ChatServer::handleClientEvent(Socket &socket, short revents) {
     ssize_t rval = read(socket.getDescriptor(), buf, this->BUFFER_SIZE);
 
     if (rval < 0) {
-        events.deregisterSocket(socket);
-        socket.destroy();
-        clients.erase(socket);
+        this->disconnectClient(socket);
         throw std::system_error(errno, std::system_category());
     }
 
     if (rval == 0) {
-        events.deregisterSocket(socket);
-        socket.destroy();
-        clients.erase(socket);
+        this->disconnectClient(socket);
     } else {
         for (const Socket &client : clients) {
             if (client != socket) {
@@ -53,4 +49,10 @@ void ChatServer::handleClientEvent(Socket &socket, short revents) {
             }
         }
     }
+}
+
+void ChatServer::disconnectClient(Socket &socket) {
+    this->events.deregisterSocket(socket);
+    socket.destroy();
+    this->clients.erase(socket);
 }
