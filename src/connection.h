@@ -5,10 +5,18 @@
 #include "stream_reader.h"
 #include "descriptor.h"
 
+class invalid_message_error : public std::runtime_error {
+public:
+    invalid_message_error(const std::string &what)
+            : runtime_error(what) {
+    }
+};
+
 class Connection : public Desciptor {
 public:
     Connection();
     Connection(Socket &socket);
+    ~Connection();
 
     int getDescriptor() const;
     void destroy();
@@ -20,15 +28,16 @@ public:
 
     void read();
     bool finishedReading() const;
+    std::string getMessage() const;
 
 private:
     Socket socket;
     StreamReader *reader;
 
-    const static size_t BUFFER_LENGTH = 1024;
+    const size_t BUFFER_LENGTH = 1024;
 
-    uint16_t messageLength;
-    char buffer[BUFFER_LENGTH];
+    uint16_t *messageLength;
+    char *buffer;
 
     enum class Reading {
         LENGTH,

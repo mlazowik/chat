@@ -16,7 +16,7 @@ IOEvents::IOEvents(size_t size) {
     }
 }
 
-void IOEvents::registerSocket(Connection &connection, std::function<void(Connection&, short)> callback) {
+void IOEvents::registerSocket(Connection *connection, std::function<void(Connection*, short)> callback) {
     size_t i = 0;
     struct pollfd *pollEvent;
 
@@ -31,19 +31,19 @@ void IOEvents::registerSocket(Connection &connection, std::function<void(Connect
 
     i--;
 
-    pollEvent->fd = connection.getDescriptor();
+    pollEvent->fd = connection->getDescriptor();
     this->callbacks[i] = callback;
     this->connections.emplace(i, connection);
 }
 
-void IOEvents::deregisterDescriptor(Connection &connection) {
+void IOEvents::deregisterDescriptor(Connection *connection) {
     size_t i = 0;
     struct pollfd *pollEvent;
 
     do {
         pollEvent = this->pollEvents + i;
         i++;
-    } while (i < this->size && pollEvent->fd != connection.getDescriptor());
+    } while (i < this->size && pollEvent->fd != connection->getDescriptor());
 
     if (i == this->size) {
         throw std::logic_error("no such descriptor");

@@ -2,6 +2,7 @@
 #define CHAT_CHAT_SERVER_H
 
 #include <set>
+
 #include "socket.h"
 #include "io_events.h"
 #include "stream_reader.h"
@@ -13,17 +14,17 @@ public:
     void run();
 
 private:
-    void handleServerEvent(Connection &connection, short revents);
-    void handleClientEvent(Connection &connection, short revents);
+    void handleServerEvent(Connection *connection, short revents);
+    void handleClientEvent(Connection *connection, short revents);
 
-    void disconnectClient(Connection &connection);
+    void disconnectClient(Connection *connection);
 
     Socket serverSocket;
     IOEvents events;
 
     const int BUFFER_SIZE = 1024;
 
-    std::set<Connection> clients;
+    std::set<Connection*> clients;
 };
 
 

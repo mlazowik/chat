@@ -1,5 +1,7 @@
 #include <unistd.h>
 #include <system_error>
+#include <netinet/in.h>
+
 #include "chat_server.h"
 
 ChatServer::ChatServer(Socket &serverSocket, IOEvents &events)
@@ -7,9 +9,9 @@ ChatServer::ChatServer(Socket &serverSocket, IOEvents &events)
 }
 
 void ChatServer::run() {
-    Connection serverConnection(this->serverSocket);
+    Connection *serverConnection = new Connection(this->serverSocket);
 
-    this->events.registerSocket(serverConnection, [&](Connection &connection, short revents) {
+    this->events.registerSocket(serverConnection, [&](Connection *connection, short revents) {
         this->handleServerEvent(serverConnection, revents);
     });
 
@@ -18,35 +20,45 @@ void ChatServer::run() {
     }
 }
 
-void ChatServer::handleServerEvent(Connection &connection, short revents) {
+void ChatServer::handleServerEvent(Connection *connection, short revents) {
     if (!(revents & POLLIN)) return;
 
     Socket clientSocket = this->serverSocket.acceptConnection();
-    Connection client(clientSocket);
+    Connection *client = new Connection(clientSocket);
     clients.insert(client);
 
-    this->events.registerSocket(client, [&](Connection &connection, short revents) {
+    this->events.registerSocket(client, [&](Connection *connection, short revents) {
         this->handleClientEvent(connection, revents);
     });
 }
 
-void ChatServer::handleClientEvent(Connection &connection, short revents) {
+void ChatServer::handleClientEvent(Connection *connection, short revents) {
     if (!(revents & (POLLIN | POLLERR))) return;
 
-    char buf[this->BUFFER_SIZE];
-    ssize_t rval = read(connection.getDescriptor(), buf, this->BUFFER_SIZE);
-
-    if (rval < 0) {
+    try {
+        connection->read();
+    } catch (invalid_message_error &ex) {
         this->disconnectClient(connection);
-        throw std::system_error(errno, std::system_category());
+        return;
+    } catch (stream_closed_error &ex) {
+        this->disconnectClient(connection);
+        return;
     }
 
-    if (rval == 0) {
-        this->disconnectClient(connection);
-    } else {
-        for (const Connection &client : clients) {
-            if (client != connection) {
-                if (write(connection.getDescriptor(), buf, rval) < 0) {
+    if (connection->finishedReading()) {
+        std::string message;
+
+        message = connection->getMessage();
+
+        for (const Connection *client : clients) {
+            if (*client != *connection) {
+                uint16_t len = htons(message.length());
+
+                if (write(client->getDescriptor(), (char*)&len, sizeof(len)) < 0) {
+                    throw std::system_error(errno, std::system_category());
+                }
+
+                if (write(client->getDescriptor(), message.c_str(), message.length()) < 0) {
                     throw std::system_error(errno, std::system_category());
                 }
             }
@@ -54,8 +66,9 @@ void ChatServer::handleClientEvent(Connection &connection, short revents) {
     }
 }
 
-void ChatServer::disconnectClient(Connection &connection) {
+void ChatServer::disconnectClient(Connection *connection) {
     this->events.deregisterDescriptor(connection);
-    connection.destroy();
+    connection->destroy();
     this->clients.erase(connection);
+    delete connection;
 }

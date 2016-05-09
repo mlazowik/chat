@@ -3,6 +3,13 @@
 
 #include <cstddef>
 
+class stream_closed_error : public std::runtime_error {
+public:
+    stream_closed_error(const std::string &what)
+            : runtime_error(what) {
+    }
+};
+
 class Stream {
 public:
     virtual ~Stream() {}
