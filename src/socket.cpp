@@ -54,18 +54,36 @@ void Socket::destroy() {
     }
 }
 
-bool Socket::operator==(const Socket &rhs) const {
+size_t Socket::getChunk(void *buffer, size_t bufferSize) {
+    ssize_t len = read(this->getDescriptor(), buffer, bufferSize);
+
+    if (len < 0) {
+        throw std::system_error(errno, std::system_category());
+    }
+
+    return (size_t )len;
+}
+
+void Socket::sendChunk(void *buffer, size_t bufferSize) {
+    ssize_t len = write(this->getDescriptor(), buffer, bufferSize);
+
+    if (len != bufferSize) {
+        throw std::runtime_error("partial / failed write");
+    }
+}
+
+bool Socket::operator==(const Desciptor &rhs) const {
     return this->getDescriptor() == rhs.getDescriptor();
 }
 
-bool Socket::operator!=(const Socket &rhs) const {
+bool Socket::operator!=(const Desciptor &rhs) const {
     return !(*this == rhs);
 }
 
-bool Socket::operator<(const Socket &rhs) const {
+bool Socket::operator<(const Desciptor &rhs) const {
     return this->getDescriptor() < rhs.getDescriptor();
 }
 
-bool Socket::operator>(const Socket &rhs) const {
+bool Socket::operator>(const Desciptor &rhs) const {
     return !(*this < rhs || *this == rhs);
 }

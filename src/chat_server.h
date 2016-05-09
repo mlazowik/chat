@@ -4,6 +4,8 @@
 #include <set>
 #include "socket.h"
 #include "io_events.h"
+#include "stream_reader.h"
+#include "connection.h"
 
 class ChatServer {
 public:
@@ -11,17 +13,17 @@ public:
     void run();
 
 private:
-    void handleServerEvent(Socket &socket, short revents);
-    void handleClientEvent(Socket &socket, short revents);
+    void handleServerEvent(Connection &connection, short revents);
+    void handleClientEvent(Connection &connection, short revents);
 
-    void disconnectClient(Socket &socket);
+    void disconnectClient(Connection &connection);
 
     Socket serverSocket;
     IOEvents events;
 
     const int BUFFER_SIZE = 1024;
 
-    std::set<Socket> clients;
+    std::set<Connection> clients;
 };
 
 

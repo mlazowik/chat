@@ -6,21 +6,22 @@
 #include <functional>
 #include <map>
 
-#include "socket.h"
+#include "descriptor.h"
+#include "connection.h"
 
 class IOEvents {
 public:
     IOEvents(size_t size);
-    void registerSocket(Socket &socket, std::function<void(Socket&, short)> callback);
-    void deregisterSocket(Socket &socket);
+    void registerSocket(Connection &connection, std::function<void(Connection&, short)> callback);
+    void deregisterDescriptor(Connection &connection);
     void processEvents();
 
 private:
-    struct pollfd *descriptors;
+    struct pollfd *pollEvents;
     size_t size;
 
-    std::map<int, std::function<void(Socket&, short)>> callbacks;
-    std::map<int, Socket> sockets;
+    std::map<int, std::function<void(Connection&, short)>> callbacks;
+    std::map<int, Connection> connections;
 };
 
 #endif //CHAT_IO_LOOP_H

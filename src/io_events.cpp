@@ -5,10 +5,10 @@
 
 IOEvents::IOEvents(size_t size) {
     this->size = size;
-    this->descriptors = new struct pollfd[size];
+    this->pollEvents = new struct pollfd[size];
 
     for (size_t i = 0; i < this->size; i++) {
-        struct pollfd *descriptor = this->descriptors + i;
+        struct pollfd *descriptor = this->pollEvents + i;
 
         descriptor->fd = -1;
         descriptor->events = POLLIN;
@@ -16,48 +16,48 @@ IOEvents::IOEvents(size_t size) {
     }
 }
 
-void IOEvents::registerSocket(Socket &socket, std::function<void(Socket&, short)> callback) {
+void IOEvents::registerSocket(Connection &connection, std::function<void(Connection&, short)> callback) {
     size_t i = 0;
-    struct pollfd *descriptor;
+    struct pollfd *pollEvent;
 
     do {
-        descriptor = this->descriptors + i;
+        pollEvent = this->pollEvents + i;
         i++;
-    } while (i < this->size && descriptor->fd != -1);
+    } while (i < this->size && pollEvent->fd != -1);
 
     if (i == this->size) {
-        throw std::runtime_error("too many sockets");
+        throw std::runtime_error("too many descriptors");
     }
 
     i--;
 
-    descriptor->fd = socket.getDescriptor();
+    pollEvent->fd = connection.getDescriptor();
     this->callbacks[i] = callback;
-    this->sockets.emplace(i, socket);
+    this->connections.emplace(i, connection);
 }
 
-void IOEvents::deregisterSocket(Socket &socket) {
+void IOEvents::deregisterDescriptor(Connection &connection) {
     size_t i = 0;
-    struct pollfd *descriptor;
+    struct pollfd *pollEvent;
 
     do {
-        descriptor = this->descriptors + i;
+        pollEvent = this->pollEvents + i;
         i++;
-    } while (i < this->size && descriptor->fd != socket.getDescriptor());
+    } while (i < this->size && pollEvent->fd != connection.getDescriptor());
 
     if (i == this->size) {
-        throw std::logic_error("no such socket");
+        throw std::logic_error("no such descriptor");
     }
 
     i--;
 
-    descriptor->fd = -1;
+    pollEvent->fd = -1;
     this->callbacks.erase(i);
-    this->sockets.erase(i);
+    this->connections.erase(i);
 }
 
 void IOEvents::processEvents() {
-    int poll_result = poll(this->descriptors, (nfds_t)this->size, 5000);
+    int poll_result = poll(this->pollEvents, (nfds_t)this->size, 5000);
 
     if (poll_result < 0) {
         throw std::system_error(errno, std::system_category());
@@ -65,10 +65,10 @@ void IOEvents::processEvents() {
 
     if (poll_result > 0) {
         for (size_t i = 0; i < this->size; i++) {
-            struct pollfd *descriptor = this->descriptors + i;
+            struct pollfd *descriptor = this->pollEvents + i;
 
             if (descriptor->fd != -1 && descriptor->revents != 0) {
-                this->callbacks[i](this->sockets[i], descriptor->revents);
+                this->callbacks[i](this->connections[i], descriptor->revents);
             }
         }
     }

@@ -1,19 +1,25 @@
 #ifndef CHAT_SOCKET_H
 #define CHAT_SOCKET_H
 
-class Socket {
+#include "stream.h"
+#include "descriptor.h"
+
+class Socket : public Stream, public Desciptor {
 public:
     Socket();
     int getDescriptor() const;
+    void destroy();
     void setPort(int port);
     void startListening();
     Socket acceptConnection();
-    void destroy();
 
-    bool operator==(const Socket &rhs) const;
-    bool operator!=(const Socket &rhs) const;
-    bool operator<(const Socket &rhs) const;
-    bool operator>(const Socket &rhs) const;
+    bool operator==(const Desciptor &rhs) const;
+    bool operator!=(const Desciptor &rhs) const;
+    bool operator<(const Desciptor &rhs) const;
+    bool operator>(const Desciptor &rhs) const;
+
+    size_t getChunk(void *buffer, size_t bufferSize);
+    void sendChunk(void *buffer, size_t bufferSize);
 
 private:
     Socket(int descriptor);

@@ -47,5 +47,5 @@ target_link_libraries(
 include(CTest)
 enable_testing()
 
-set(SOURCE_FILES src/server.cpp src/server_options.cpp src/server_options.h src/options.h src/socket.cpp src/socket.h src/io_events.cpp src/io_events.h src/chat_server.cpp src/chat_server.h)
+set(SOURCE_FILES src/server.cpp src/server_options.cpp src/server_options.h src/options.h src/socket.cpp src/socket.h src/io_events.cpp src/io_events.h src/chat_server.cpp src/chat_server.h src/stream_reader.cpp src/stream_reader.h src/stream.h src/connection.cpp src/connection.h src/descriptor.h)
 add_executable(server ${SOURCE_FILES})
