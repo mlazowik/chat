@@ -19,6 +19,10 @@ Socket::~Socket() {
     }
 }
 
+int Socket::getDescriptor() {
+    return this->descriptor;
+}
+
 Socket::Socket(int descriptor) {
     this->descriptor = descriptor;
 }

@@ -5,6 +5,7 @@ class Socket {
 public:
     Socket();
     ~Socket();
+    int getDescriptor();
     void setPort(int port);
     void startListening();
     Socket acceptConnection();

@@ -1,8 +1,13 @@
 #include <iostream>
 #include <stdexcept>
+#include <system_error>
+#include <unistd.h>
 
 #include "server_options.h"
 #include "socket.h"
+#include "io_events.h"
+
+#define BUF_SIZE 1024
 
 int main(int argc, char* argv[]) {
     const int DEFAULT_PORT = 20160;
@@ -30,8 +35,32 @@ int main(int argc, char* argv[]) {
     s.setPort(port);
     s.startListening();
 
+    IOEvents events(20);
+    char buf[BUF_SIZE];
+
     while (true) {
         Socket connection = s.acceptConnection();
+
+        bool active = true;
+
+        events.registerSocket(connection, [&](short revents) {
+            ssize_t rval = read(connection.getDescriptor(), buf, BUF_SIZE);
+
+            if (rval < 0) {
+                throw std::system_error(errno, std::system_category());
+            }
+
+            if (rval == 0) {
+                events.deregisterSocket(connection);
+                active = false;
+            }
+
+            printf("-->%.*s\n", (int) rval, buf);
+        });
+
+        while (active) {
+            events.processEvents();
+        }
     }
 
     return 0;

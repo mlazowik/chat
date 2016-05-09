@@ -47,5 +47,5 @@ target_link_libraries(
 include(CTest)
 enable_testing()
 
-set(SOURCE_FILES src/server.cpp src/server_options.cpp src/server_options.h src/options.h src/socket.cpp src/socket.h)
+set(SOURCE_FILES src/server.cpp src/server_options.cpp src/server_options.h src/options.h src/socket.cpp src/socket.h src/io_events.cpp src/io_events.h)
 add_executable(server ${SOURCE_FILES})
