@@ -1,20 +1,22 @@
 #include <stdexcept>
-#include "server_options.h"
 
-ServerOptions::ServerOptions(
-        std::vector<std::string> arguments, int defaultPort) {
+#include "client_options.h"
+
+ClientOptions::ClientOptions(std::vector<std::string> arguments, int defaultPort) {
     this->arguments = arguments;
 
     this->port = defaultPort;
 }
 
-void ServerOptions::parse() {
-    if (this->arguments.size() > 2) {
-        throw std::invalid_argument("too many arguments");
+void ClientOptions::parse() {
+    if (this->arguments.size() < 2 || this->arguments.size() > 3) {
+        throw std::invalid_argument("invalid argument count");
     }
 
-    if (this->arguments.size() == 2) {
-        std::string port_string = this->arguments[1];
+    this->host = this->arguments[1];
+
+    if (this->arguments.size() == 3) {
+        std::string port_string = this->arguments[2];
 
         std::string::size_type first_after_number;
         try {
@@ -30,10 +32,14 @@ void ServerOptions::parse() {
     }
 }
 
-int ServerOptions::getPort() const {
+int ClientOptions::getPort() const {
     return this->port;
 }
 
-std::string ServerOptions::getUsage() const {
-    return "Usage: server [PORT]";
+std::string ClientOptions::getHost() const {
+    return this->host;
+}
+
+std::string ClientOptions::getUsage() const {
+    return "Usage: client host [PORT]";
 }

@@ -9,8 +9,8 @@ class ServerOptions : Options {
 public:
     ServerOptions(std::vector<std::string>, int defaultPort);
     void parse();
-    int getPort();
-    std::string getUsage();
+    int getPort() const;
+    std::string getUsage() const;
 
 private:
     std::vector<std::string> arguments;
