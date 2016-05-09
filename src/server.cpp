@@ -32,7 +32,7 @@ int main(int argc, char* argv[]) {
     master.setPort(port);
     master.startListening();
 
-    IOEvents events(20);
+    IOEvents events(21);
 
     ChatServer server(master, events);
     server.run();

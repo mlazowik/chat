@@ -25,11 +25,11 @@ void IOEvents::registerSocket(Connection *connection, std::function<void(Connect
         i++;
     } while (i < this->size && pollEvent->fd != -1);
 
-    if (i == this->size) {
+    i--;
+
+    if (pollEvent->fd != -1) {
         throw std::runtime_error("too many descriptors");
     }
-
-    i--;
 
     pollEvent->fd = connection->getDescriptor();
     this->callbacks[i] = callback;
@@ -45,11 +45,11 @@ void IOEvents::deregisterDescriptor(Connection *connection) {
         i++;
     } while (i < this->size && pollEvent->fd != connection->getDescriptor());
 
-    if (i == this->size) {
+    i--;
+
+    if (pollEvent->fd != connection->getDescriptor()) {
         throw std::logic_error("no such descriptor");
     }
-
-    i--;
 
     pollEvent->fd = -1;
     this->callbacks.erase(i);
