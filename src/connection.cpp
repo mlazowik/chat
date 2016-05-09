@@ -40,10 +40,14 @@ void Connection::read() {
 
                 if (*this->messageLength > 1000) {
                     throw invalid_message_error("message is too long");
+                } else if (*this->messageLength == 0) {
+                    this->reading = Reading::NOTHING;
+                    this->buffer[*this->messageLength] = '\0';
+                } else {
+                    this->reader = getMessageReader();
+                    this->reading = Reading::MESSAGE;
                 }
 
-                this->reader = getMessageReader();
-                this->reading = Reading::MESSAGE;
                 break;
             case Reading::MESSAGE:
                 delete this->reader;
