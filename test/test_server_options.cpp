@@ -1,5 +1,5 @@
 #include "gtest/gtest.h"
-#include "server/server_options.h"
+#include "chat_server/server_options.h"
 
 TEST(ServerOptionsTest, ReturnsDefaultPort) {
     const int DEFAULT_PORT = 42;

@@ -31,15 +31,20 @@ int main(int argc, char* argv[]) {
 
     Socket server;
 
-    server.setPort(port);
-    server.setHost(host);
+    try {
+        server.setPort(port);
+        server.setHost(host);
 
-    server.connect();
+        server.connect();
 
-    IOEvents events(2);
+        IOEvents events(2);
 
-    ChatClient client(server, events);
-    client.run();
+        ChatClient client(server, events);
+        client.run();
+    } catch (std::exception &ex) {
+        std::cerr << "Error: " << ex.what() << "\n";
+        return 100;
+    }
 
     return 0;
 }
