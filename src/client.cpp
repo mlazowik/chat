@@ -10,6 +10,8 @@
 int main(int argc, char* argv[]) {
     const int DEFAULT_PORT = 20160;
 
+    setvbuf(stdin, NULL, _IONBF, 0);
+
     std::vector<std::string> arguments;
 
     for (int argument = 0; argument < argc; argument++) {
