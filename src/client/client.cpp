@@ -5,7 +5,7 @@
 
 #include "client_options.h"
 #include "chat_client.h"
-#include "socket.h"
+#include "common/socket.h"
 
 int main(int argc, char* argv[]) {
     const int DEFAULT_PORT = 20160;

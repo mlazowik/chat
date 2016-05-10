@@ -12,7 +12,7 @@ include_directories(
 
 add_library(
         server_options
-        src/server_options.cpp
+        src/server/server_options.cpp
 )
 
 set(GOOGLETEST_ROOT lib/googletest/googletest CACHE STRING "Google Test source root")
@@ -48,43 +48,43 @@ include(CTest)
 enable_testing()
 
 set(SERVER_SOURCE_FILES
-        src/server.cpp
-        src/server_options.cpp
-        src/server_options.h
-        src/options.h
-        src/socket.cpp
-        src/socket.h
-        src/io_events.cpp
-        src/io_events.h
-        src/chat_server.cpp
-        src/chat_server.h
-        src/stream_reader.cpp
-        src/stream_reader.h
-        src/stream.h
-        src/connection.cpp
-        src/connection.h
-        src/descriptor.h)
+        src/server/server.cpp
+        src/server/server_options.cpp
+        src/server/server_options.h
+        src/common/options.h
+        src/common/socket.cpp
+        src/common/socket.h
+        src/common/io_events.cpp
+        src/common/io_events.h
+        src/server/chat_server.cpp
+        src/server/chat_server.h
+        src/common/stream_reader.cpp
+        src/common/stream_reader.h
+        src/common/stream.h
+        src/common/connection.cpp
+        src/common/connection.h
+        src/common/descriptor.h)
 
 add_executable(server ${SERVER_SOURCE_FILES})
 
 set(CLIENT_SOURCE_FILES
-        src/client.cpp
-        src/client_options.cpp
-        src/client_options.h
-        src/options.h
-        src/socket.cpp
-        src/socket.h
-        src/io_events.cpp
-        src/io_events.h
-        src/stream_reader.cpp
-        src/stream_reader.h
-        src/stream.h
-        src/connection.cpp
-        src/connection.h
-        src/chat_client.cpp
-        src/chat_client.h
-        src/connection.cpp
-        src/connection.h
-        src/descriptor.h)
+        src/client/client.cpp
+        src/client/client_options.cpp
+        src/client/client_options.h
+        src/common/options.h
+        src/common/socket.cpp
+        src/common/socket.h
+        src/common/io_events.cpp
+        src/common/io_events.h
+        src/common/stream_reader.cpp
+        src/common/stream_reader.h
+        src/common/stream.h
+        src/common/connection.cpp
+        src/common/connection.h
+        src/client/chat_client.cpp
+        src/client/chat_client.h
+        src/common/connection.cpp
+        src/common/connection.h
+        src/common/descriptor.h)
 
 add_executable(client ${CLIENT_SOURCE_FILES})
