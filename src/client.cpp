@@ -4,6 +4,7 @@
 #include <stdexcept>
 
 #include "client_options.h"
+#include "chat_client.h"
 #include "socket.h"
 
 int main(int argc, char* argv[]) {
@@ -17,6 +18,9 @@ int main(int argc, char* argv[]) {
 
     ClientOptions options(arguments, DEFAULT_PORT);
 
+    std::cin.rdbuf()->pubsetbuf(NULL, 0);
+    std::cout.rdbuf()->pubsetbuf(NULL, 0);
+
     try {
         options.parse();
     } catch(std::exception &ex) {
@@ -27,6 +31,18 @@ int main(int argc, char* argv[]) {
 
     int port = options.getPort();
     std::string host = options.getHost();
+
+    Socket server;
+
+    server.setPort(port);
+    server.setHost(host);
+
+    server.connect();
+
+    IOEvents events(2);
+
+    ChatClient client(server, events);
+    client.run();
 
     return 0;
 }

@@ -2,6 +2,7 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <unistd.h>
+#include <cstring>
 
 #include "socket.h"
 
@@ -22,11 +23,43 @@ Socket::Socket(int descriptor) {
 }
 
 void Socket::setPort(int port) {
+    this->port = port;
+}
+
+void Socket::setHost(std::string host) {
+    struct addrinfo hints;
+
+    memset(&hints, 0, sizeof(struct addrinfo));
+    hints.ai_flags = 0;
+    hints.ai_family = AF_INET;
+    hints.ai_socktype = SOCK_STREAM;
+    hints.ai_protocol = IPPROTO_TCP;
+
+    std::string portString = std::to_string(this->port);
+
+    int err = getaddrinfo(host.c_str(), portString.c_str(), &hints, &this->address);
+    if (err != 0) {
+        if (err == EAI_SYSTEM) {
+            throw std::system_error(errno, std::system_category());
+        } else {
+            std::string e(gai_strerror(err));
+            throw std::runtime_error("failed too look up the address: " + e);
+        }
+    }
+}
+
+void Socket::connect() {
+    if (::connect(this->descriptor, address->ai_addr, address->ai_addrlen) != 0) {
+        throw std::system_error(errno, std::system_category());
+    }
+}
+
+void Socket::bindToAddress() {
     struct sockaddr_in address;
 
     address.sin_family = AF_INET;
     address.sin_addr.s_addr = htonl(INADDR_ANY);
-    address.sin_port = htons(port);
+    address.sin_port = htons(this->port);
 
     if (bind(this->descriptor, (struct sockaddr *) &address, sizeof(address)) < 0) {
         throw std::system_error(errno, std::system_category());

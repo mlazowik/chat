@@ -30,6 +30,8 @@ int main(int argc, char* argv[]) {
     Socket master;
 
     master.setPort(port);
+
+    master.bindToAddress();
     master.startListening();
 
     IOEvents events(21);
