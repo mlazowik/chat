@@ -29,15 +29,20 @@ int main(int argc, char* argv[]) {
 
     Socket master;
 
-    master.setPort(port);
+    try {
+        master.setPort(port);
 
-    master.bindToAddress();
-    master.startListening();
+        master.bindToAddress();
+        master.startListening();
 
-    IOEvents events(21);
+        IOEvents events(21);
 
-    ChatServer server(master, events);
-    server.run();
+        ChatServer server(master, events);
+        server.run();
+    } catch (std::exception &ex) {
+        std::cerr << "Error: " << ex.what() << "\n";
+        exit(EXIT_FAILURE);
+    }
 
     return 0;
 }

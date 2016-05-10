@@ -65,7 +65,7 @@ set(SERVER_SOURCE_FILES
         src/common/connection.h
         src/common/descriptor.h)
 
-add_executable(chat_server ${SERVER_SOURCE_FILES})
+add_executable(server ${SERVER_SOURCE_FILES})
 
 set(CLIENT_SOURCE_FILES
         src/chat_client/client.cpp
@@ -87,4 +87,4 @@ set(CLIENT_SOURCE_FILES
         src/common/connection.h
         src/common/descriptor.h)
 
-add_executable(chat_client ${CLIENT_SOURCE_FILES})
+add_executable(client ${CLIENT_SOURCE_FILES})
