@@ -1,5 +1,6 @@
 #include <unistd.h>
 #include <system_error>
+#include <iostream>
 
 #include "chat_server.h"
 
@@ -29,12 +30,19 @@ void ChatServer::handleServerEvent(Connection *connection, short revents) {
     Connection *client = new Connection(clientSocket);
     clients.insert(client);
 
-    this->events.registerConnection(
-            client,
-            [&](Connection *connection, short revents) {
-                this->handleClientEvent(connection, revents);
-            }
-    );
+    try {
+        this->events.registerConnection(
+                client,
+                [&](Connection *connection, short revents) {
+                    this->handleClientEvent(connection, revents);
+                }
+        );
+    } catch (std::runtime_error &ex) {
+        std::cerr << "Cannot accept connection: " << ex.what() << "\n";
+        connection->destroy();
+        this->clients.erase(connection);
+        delete connection;
+    }
 }
 
 void ChatServer::handleClientEvent(Connection *connection, short revents) {
