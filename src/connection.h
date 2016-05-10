@@ -29,6 +29,7 @@ public:
     void read();
     bool finishedReading() const;
     std::string getMessage() const;
+    void sendMessage(std::string message) const;
 
 private:
     Socket socket;

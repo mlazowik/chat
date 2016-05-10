@@ -14,8 +14,8 @@ public:
 class Stream {
 public:
     virtual ~Stream() {}
-    virtual size_t getChunk(void *buffer, size_t bufferSize) = 0;
-    virtual void sendChunk(void *buffer, size_t bufferSize) = 0;
+    virtual size_t getChunk(void *buffer, size_t bufferSize) const = 0;
+    virtual void sendChunk(const void *buffer, size_t bufferSize) const = 0;
 };
 
 #endif //CHAT_STREAM_H

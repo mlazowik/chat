@@ -18,8 +18,8 @@ public:
     bool operator<(const Desciptor &rhs) const;
     bool operator>(const Desciptor &rhs) const;
 
-    size_t getChunk(void *buffer, size_t bufferSize);
-    void sendChunk(void *buffer, size_t bufferSize);
+    size_t getChunk(void *buffer, size_t bufferSize) const;
+    void sendChunk(const void *buffer, size_t bufferSize) const;
 
 private:
     Socket(int descriptor);

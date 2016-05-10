@@ -68,6 +68,13 @@ std::string Connection::getMessage() const {
     return std::string(this->buffer);
 }
 
+void Connection::sendMessage(std::string message) const {
+    uint16_t len = htons(message.length());
+
+    this->socket.sendChunk((char*)&len, sizeof(len));
+    this->socket.sendChunk(message.c_str(), message.length());
+}
+
 StreamReader* Connection::getLengthReader() {
     return new StreamReader(this->socket, (char*)this->messageLength,
                             sizeof(*this->messageLength));

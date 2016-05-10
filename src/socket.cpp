@@ -54,7 +54,7 @@ void Socket::destroy() {
     }
 }
 
-size_t Socket::getChunk(void *buffer, size_t bufferSize) {
+size_t Socket::getChunk(void *buffer, size_t bufferSize) const {
     ssize_t len = read(this->getDescriptor(), buffer, bufferSize);
 
     if (len < 0) {
@@ -64,7 +64,7 @@ size_t Socket::getChunk(void *buffer, size_t bufferSize) {
     return (size_t)len;
 }
 
-void Socket::sendChunk(void *buffer, size_t bufferSize) {
+void Socket::sendChunk(const void *buffer, size_t bufferSize) const {
     ssize_t len = write(this->getDescriptor(), buffer, bufferSize);
 
     if (len < 0) {

@@ -1,6 +1,5 @@
 #include <unistd.h>
 #include <system_error>
-#include <netinet/in.h>
 
 #include "chat_server.h"
 
@@ -46,21 +45,11 @@ void ChatServer::handleClientEvent(Connection *connection, short revents) {
     }
 
     if (connection->finishedReading()) {
-        std::string message;
-
-        message = connection->getMessage();
+        std::string message = connection->getMessage();
 
         for (const Connection *client : clients) {
             if (*client != *connection) {
-                uint16_t len = htons(message.length());
-
-                if (write(client->getDescriptor(), (char*)&len, sizeof(len)) < 0) {
-                    throw std::system_error(errno, std::system_category());
-                }
-
-                if (write(client->getDescriptor(), message.c_str(), message.length()) < 0) {
-                    throw std::system_error(errno, std::system_category());
-                }
+                client->sendMessage(message);
             }
         }
     }
