@@ -3,7 +3,7 @@
 
 #include <string>
 #include <vector>
-#include "common/options.h"
+#include "../common/options.h"
 
 class ClientOptions : public Options {
 public:

@@ -2,9 +2,9 @@
 #include <stdexcept>
 
 #include "server_options.h"
-#include "common/socket.h"
-#include "common/io_events.h"
-#include "server/chat_server.h"
+#include "chat_server.h"
+#include "../common/socket.h"
+#include "../common/io_events.h"
 
 int main(int argc, char* argv[]) {
     const int DEFAULT_PORT = 20160;
