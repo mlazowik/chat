@@ -1,5 +1,6 @@
 #include <cstdlib>
 #include <iostream>
+#include <cstring>
 #include <system_error>
 
 #include "chat_client.h"
@@ -64,16 +65,24 @@ void ChatClient::handleServerEvent(Connection *connection, short revents) {
 void ChatClient::handleClientEvent(Connection *connection, short revents) {
     if (!(revents & (POLLIN | POLLHUP))) return;
 
-    std::string message;
+    char buffer[this->BUFFER_SIZE];
 
-    std::getline(std::cin, message);
+    if (std::fgets(buffer, 1001, stdin) != NULL) {
+        size_t lengthWithoutNewline = std::strcspn(buffer, "\n");
 
-    if (std::cin.eof()) {
-        this->disconnectServer(server);
-        exit(EXIT_SUCCESS);
+        if (!this->lastEndedWithNewline && lengthWithoutNewline == 0) {
+            return;
+        }
+        this->lastEndedWithNewline = lengthWithoutNewline != 1000;
+        buffer[lengthWithoutNewline] = '\0';
+        std::string message(buffer);
+        this->server->sendMessage(message);
+    } else {
+        if (std::feof(stdin)) {
+            this->disconnectServer(server);
+            exit(EXIT_SUCCESS);
+        }
     }
-
-    this->server->sendMessage(message);
 }
 
 void ChatClient::disconnectServer(Connection *connection) {

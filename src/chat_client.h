@@ -20,6 +20,10 @@ private:
     Socket *clientSocekt;
     IOEvents events;
 
+    const int BUFFER_SIZE = 1024;
+
+    bool lastEndedWithNewline = true;
+
     Connection *server;
     Connection *client;
 };
