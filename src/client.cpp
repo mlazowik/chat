@@ -18,9 +18,6 @@ int main(int argc, char* argv[]) {
 
     ClientOptions options(arguments, DEFAULT_PORT);
 
-    std::cin.rdbuf()->pubsetbuf(NULL, 0);
-    std::cout.rdbuf()->pubsetbuf(NULL, 0);
-
     try {
         options.parse();
     } catch(std::exception &ex) {
