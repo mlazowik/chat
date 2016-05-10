@@ -16,7 +16,9 @@ IOEvents::IOEvents(size_t size) {
     }
 }
 
-void IOEvents::registerSocket(Connection *connection, std::function<void(Connection*, short)> callback) {
+void IOEvents::registerConnection(Connection *connection,
+                                  std::function<void(Connection *,
+                                                     short)> callback) {
     size_t i = 0;
     struct pollfd *pollEvent;
 
@@ -36,7 +38,7 @@ void IOEvents::registerSocket(Connection *connection, std::function<void(Connect
     this->connections.emplace(i, connection);
 }
 
-void IOEvents::deregisterDescriptor(Connection *connection) {
+void IOEvents::deregisterConnection(Connection *connection) {
     size_t i = 0;
     struct pollfd *pollEvent;
 

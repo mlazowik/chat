@@ -11,8 +11,9 @@
 class IOEvents {
 public:
     IOEvents(size_t size);
-    void registerSocket(Connection *connection, std::function<void(Connection*, short)> callback);
-    void deregisterDescriptor(Connection *connection);
+    void registerConnection(Connection *connection,
+                            std::function<void(Connection *, short)> callback);
+    void deregisterConnection(Connection *connection);
     void processEvents();
 
 private:

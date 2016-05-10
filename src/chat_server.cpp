@@ -10,9 +10,12 @@ ChatServer::ChatServer(Socket &serverSocket, IOEvents &events)
 void ChatServer::run() {
     Connection *serverConnection = new Connection(this->serverSocket);
 
-    this->events.registerSocket(serverConnection, [&](Connection *connection, short revents) {
-        this->handleServerEvent(serverConnection, revents);
-    });
+    this->events.registerConnection(
+            serverConnection,
+            [&](Connection *connection, short revents) {
+                this->handleServerEvent(serverConnection, revents);
+            }
+    );
 
     while (true) {
         this->events.processEvents();
@@ -26,9 +29,12 @@ void ChatServer::handleServerEvent(Connection *connection, short revents) {
     Connection *client = new Connection(clientSocket);
     clients.insert(client);
 
-    this->events.registerSocket(client, [&](Connection *connection, short revents) {
-        this->handleClientEvent(connection, revents);
-    });
+    this->events.registerConnection(
+            client,
+            [&](Connection *connection, short revents) {
+                this->handleClientEvent(connection, revents);
+            }
+    );
 }
 
 void ChatServer::handleClientEvent(Connection *connection, short revents) {
@@ -56,7 +62,7 @@ void ChatServer::handleClientEvent(Connection *connection, short revents) {
 }
 
 void ChatServer::disconnectClient(Connection *connection) {
-    this->events.deregisterDescriptor(connection);
+    this->events.deregisterConnection(connection);
     connection->destroy();
     this->clients.erase(connection);
     delete connection;
