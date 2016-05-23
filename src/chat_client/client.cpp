@@ -2,38 +2,34 @@
 #include <vector>
 #include <string>
 #include <stdexcept>
+#include <string_parser.h>
+#include <number_parser.h>
 
-#include "client_options.h"
 #include "chat_client.h"
 #include "../common/socket.h"
+#include "client_options.h"
 
 int main(int argc, char* argv[]) {
     const int DEFAULT_PORT = 20160;
 
-    std::vector<std::string> arguments;
+    auto host = std::make_shared<StringParser>(argv[1]);
+    auto port = std::make_shared<NumberParser>(StringParser(argv[2]));
 
-    for (int argument = 0; argument < argc; argument++) {
-        arguments.push_back(argv[argument]);
-    }
-
-    ClientOptions options(arguments, DEFAULT_PORT);
+    ClientOptions options({host, port});
 
     try {
-        options.parse();
+        options.parse((size_t)argc - 1);
     } catch(std::exception &ex) {
         std::cerr << "Invalid arguments: " << ex.what() << "\n";
         std::cerr << options.getUsage() << "\n";
         exit(EXIT_FAILURE);
     }
 
-    int port = options.getPort();
-    std::string host = options.getHost();
-
     Socket server;
 
     try {
-        server.setPort(port);
-        server.setHost(host);
+        server.setPort(port->getValue());
+        server.setHost(host->getValue());
 
         server.connect();
 

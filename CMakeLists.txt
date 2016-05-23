@@ -10,11 +10,6 @@ include_directories(
         ${PROJECT_SOURCE_DIR}/src
 )
 
-add_library(
-        server_options
-        src/chat_server/server_options.cpp
-)
-
 set(GOOGLETEST_ROOT lib/googletest/googletest CACHE STRING "Google Test source root")
 
 include_directories(
@@ -32,7 +27,7 @@ endforeach()
 
 add_library(googletest ${GOOGLETEST_SOURCES})
 
-set(SOURCE_TEST_FILES test/main.cpp test/test_server_options.cpp)
+set(SOURCE_TEST_FILES test/main.cpp)
 add_executable(unit_tests ${SOURCE_TEST_FILES})
 
 add_dependencies(unit_tests googletest)
@@ -40,18 +35,22 @@ add_dependencies(unit_tests googletest)
 target_link_libraries(
         unit_tests
         googletest
-        server_options
         pthread
 )
 
 include(CTest)
 enable_testing()
 
+set(OPTIONS_ROOT lib/options/src CACHE STRING "Options source root")
+
+include_directories(
+        ${PROJECT_SOURCE_DIR}/${OPTIONS_ROOT}
+)
+
+add_subdirectory(${PROJECT_SOURCE_DIR}/lib/options)
+
 set(SERVER_SOURCE_FILES
         src/chat_server/server.cpp
-        src/chat_server/server_options.cpp
-        src/chat_server/server_options.h
-        src/common/options.h
         src/common/socket.cpp
         src/common/socket.h
         src/common/io_events.cpp
@@ -63,15 +62,16 @@ set(SERVER_SOURCE_FILES
         src/common/stream.h
         src/common/connection.cpp
         src/common/connection.h
-        src/common/descriptor.h)
+        src/common/descriptor.h src/chat_server/server_options.cpp src/chat_server/server_options.h)
 
 add_executable(server ${SERVER_SOURCE_FILES})
 
+add_dependencies(server options)
+
+target_link_libraries(server options)
+
 set(CLIENT_SOURCE_FILES
         src/chat_client/client.cpp
-        src/chat_client/client_options.cpp
-        src/chat_client/client_options.h
-        src/common/options.h
         src/common/socket.cpp
         src/common/socket.h
         src/common/io_events.cpp
@@ -85,6 +85,10 @@ set(CLIENT_SOURCE_FILES
         src/chat_client/chat_client.h
         src/common/connection.cpp
         src/common/connection.h
-        src/common/descriptor.h)
+        src/common/descriptor.h src/chat_client/client_options.cpp src/chat_client/client_options.h)
 
 add_executable(client ${CLIENT_SOURCE_FILES})
+
+add_dependencies(client options)
+
+target_link_libraries(client options)

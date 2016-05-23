@@ -1,5 +1,7 @@
 #include <iostream>
 #include <stdexcept>
+#include <string_parser.h>
+#include <number_parser.h>
 
 #include "server_options.h"
 #include "chat_server.h"
@@ -9,28 +11,22 @@
 int main(int argc, char* argv[]) {
     const int DEFAULT_PORT = 20160;
 
-    std::vector<std::string> arguments;
+    auto port = std::make_shared<NumberParser>(StringParser(argv[1]));
 
-    for (int argument = 0; argument < argc; argument++) {
-        arguments.push_back(argv[argument]);
-    }
-
-    ServerOptions options(arguments, DEFAULT_PORT);
+    ServerOptions options({port});
 
     try {
-        options.parse();
+        options.parse((size_t)argc - 1);
     } catch(std::exception &ex) {
         std::cerr << "Invalid arguments: " << ex.what() << "\n";
         std::cerr << options.getUsage() << "\n";
         exit(EXIT_FAILURE);
     }
 
-    int port = options.getPort();
-
     Socket master;
 
     try {
-        master.setPort(port);
+        master.setPort(port->getValue());
 
         master.bindToAddress();
         master.startListening();
