@@ -1,6 +1,8 @@
 #include <stdexcept>
 #include <netinet/in.h>
 #include <stream/primitive_type_reader.h>
+#include <stream/string_reader.h>
+#include <iostream>
 
 #include "connection.h"
 
@@ -8,11 +10,6 @@ Connection::Connection() {}
 
 Connection::Connection(Socket &socket) : socket(socket) {
     this->reading = Reading::NOTHING;
-    this->buffer = new char[this->BUFFER_LENGTH];
-}
-
-Connection::~Connection() {
-    delete[] this->buffer;
 }
 
 int Connection::getDescriptor() const {
@@ -45,8 +42,8 @@ void Connection::read() {
                 if (this->messageLength > 1000) {
                     throw invalid_message_error("message is too long");
                 } else if (this->messageLength == 0) {
+                    this->message = "";
                     this->reading = Reading::NOTHING;
-                    this->buffer[this->messageLength] = '\0';
                 } else {
                     this->reader = getMessageReader();
                     this->reading = Reading::MESSAGE;
@@ -54,9 +51,9 @@ void Connection::read() {
 
                 break;
             case Reading::MESSAGE:
+                this->message = ((StringReader*)this->reader)->getValue();
                 delete this->reader;
                 this->reading = Reading::NOTHING;
-                this->buffer[this->messageLength] = '\0';
                 break;
             case Reading::NOTHING:
                 throw std::logic_error("we cannot be reading nothing here!");
@@ -69,7 +66,7 @@ bool Connection::finishedReading() const {
 }
 
 std::string Connection::getMessage() const {
-    return std::string(this->buffer);
+    return this->message;
 }
 
 void Connection::sendMessage(std::string message) const {
@@ -84,7 +81,9 @@ Reader* Connection::getLengthReader() {
 }
 
 Reader* Connection::getMessageReader() {
-    return new StreamReader(this->socket, this->buffer, this->messageLength);
+    return new StringReader(this->socket, [&](std::string value) {
+        return value.length() == this->messageLength;
+    });
 }
 
 bool Connection::operator==(const Desciptor &rhs) const {

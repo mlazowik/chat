@@ -17,7 +17,6 @@ class Connection : public Desciptor {
 public:
     Connection();
     Connection(Socket &socket);
-    ~Connection();
 
     int getDescriptor() const;
     void destroy();
@@ -36,10 +35,8 @@ private:
     Socket socket;
     Reader *reader;
 
-    const size_t BUFFER_LENGTH = 1024;
-
     uint16_t messageLength;
-    char *buffer;
+    std::string message;
 
     enum class Reading {
         LENGTH,
