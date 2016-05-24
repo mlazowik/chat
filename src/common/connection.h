@@ -34,11 +34,11 @@ public:
 
 private:
     Socket socket;
-    StreamReader *reader;
+    Reader *reader;
 
     const size_t BUFFER_LENGTH = 1024;
 
-    uint16_t *messageLength;
+    uint16_t messageLength;
     char *buffer;
 
     enum class Reading {
@@ -47,8 +47,8 @@ private:
         NOTHING
     } reading;
 
-    StreamReader* getLengthReader();
-    StreamReader* getMessageReader();
+    Reader* getLengthReader();
+    Reader* getMessageReader();
 };
 
 #endif //CHAT_CONNECTION_H

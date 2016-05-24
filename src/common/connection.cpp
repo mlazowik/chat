@@ -1,5 +1,6 @@
 #include <stdexcept>
 #include <netinet/in.h>
+#include <stream/primitive_type_reader.h>
 
 #include "connection.h"
 
@@ -7,12 +8,10 @@ Connection::Connection() {}
 
 Connection::Connection(Socket &socket) : socket(socket) {
     this->reading = Reading::NOTHING;
-    this->messageLength = new uint16_t;
     this->buffer = new char[this->BUFFER_LENGTH];
 }
 
 Connection::~Connection() {
-    delete[] this->messageLength;
     delete[] this->buffer;
 }
 
@@ -35,14 +34,19 @@ void Connection::read() {
     if (this->reader->finished()) {
         switch (this->reading) {
             case Reading::LENGTH:
-                *this->messageLength = ntohs(*this->messageLength);
+                this->messageLength = (
+                        (PrimitiveTypeReader<uint16_t >*)this->reader
+                )->getValue();
+
+                this->messageLength = ntohs(this->messageLength);
+
                 delete this->reader;
 
-                if (*this->messageLength > 1000) {
+                if (this->messageLength > 1000) {
                     throw invalid_message_error("message is too long");
-                } else if (*this->messageLength == 0) {
+                } else if (this->messageLength == 0) {
                     this->reading = Reading::NOTHING;
-                    this->buffer[*this->messageLength] = '\0';
+                    this->buffer[this->messageLength] = '\0';
                 } else {
                     this->reader = getMessageReader();
                     this->reading = Reading::MESSAGE;
@@ -52,7 +56,7 @@ void Connection::read() {
             case Reading::MESSAGE:
                 delete this->reader;
                 this->reading = Reading::NOTHING;
-                this->buffer[*this->messageLength] = '\0';
+                this->buffer[this->messageLength] = '\0';
                 break;
             case Reading::NOTHING:
                 throw std::logic_error("we cannot be reading nothing here!");
@@ -75,14 +79,12 @@ void Connection::sendMessage(std::string message) const {
     this->socket.sendChunk(message.c_str(), message.length());
 }
 
-StreamReader* Connection::getLengthReader() {
-    return new StreamReader(this->socket, (char*)this->messageLength,
-                            sizeof(*this->messageLength));
+Reader* Connection::getLengthReader() {
+    return new PrimitiveTypeReader<uint16_t>(this->socket);
 }
 
-StreamReader* Connection::getMessageReader() {
-    return new StreamReader(this->socket, this->buffer,
-                            *this->messageLength);
+Reader* Connection::getMessageReader() {
+    return new StreamReader(this->socket, this->buffer, this->messageLength);
 }
 
 bool Connection::operator==(const Desciptor &rhs) const {
