@@ -13,6 +13,8 @@ int main(int argc, char* argv[]) {
 
     auto port = std::make_shared<NumberParser>(StringParser(argv[1]));
 
+    port->setDefaultValue(DEFAULT_PORT);
+
     ServerOptions options({port});
 
     try {

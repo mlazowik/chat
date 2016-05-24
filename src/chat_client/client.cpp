@@ -15,6 +15,8 @@ int main(int argc, char* argv[]) {
     auto host = std::make_shared<StringParser>(argv[1]);
     auto port = std::make_shared<NumberParser>(StringParser(argv[2]));
 
+    port->setDefaultValue(DEFAULT_PORT);
+
     ClientOptions options({host, port});
 
     try {
