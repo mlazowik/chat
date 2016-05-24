@@ -3,8 +3,8 @@
 
 #include <string>
 #include <netdb.h>
+#include <stream/stream.h>
 
-#include "stream.h"
 #include "descriptor.h"
 
 class Socket : public Stream, public Desciptor {
@@ -40,7 +40,5 @@ private:
 
     const int BACKLOG_QUEUE_LENGTH = 5;
 };
-
-
 
 #endif //CHAT_SOCKET_H

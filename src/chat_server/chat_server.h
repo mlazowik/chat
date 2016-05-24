@@ -5,7 +5,6 @@
 
 #include "../common/socket.h"
 #include "../common/io_events.h"
-#include "../common/stream_reader.h"
 #include "common/connection.h"
 
 class ChatServer {

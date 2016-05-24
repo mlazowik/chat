@@ -1,8 +1,9 @@
 #ifndef CHAT_CONNECTION_H
 #define CHAT_CONNECTION_H
 
+#include <stream/stream_reader.h>
+
 #include "socket.h"
-#include "stream_reader.h"
 #include "descriptor.h"
 
 class invalid_message_error : public std::runtime_error {
