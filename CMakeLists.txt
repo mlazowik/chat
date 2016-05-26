@@ -41,7 +41,7 @@ target_link_libraries(
 include(CTest)
 enable_testing()
 
-set(OPTIONS_ROOT lib/options/src CACHE STRING "Options source root")
+set(OPTIONS_ROOT lib/options/options CACHE STRING "Options source root")
 
 include_directories(
         ${PROJECT_SOURCE_DIR}/${OPTIONS_ROOT}

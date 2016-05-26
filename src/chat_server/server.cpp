@@ -1,7 +1,7 @@
 #include <iostream>
 #include <stdexcept>
-#include <string_parser.h>
-#include <number_parser.h>
+#include <options/string_parser.h>
+#include <options/number_parser.h>
 
 #include "server_options.h"
 #include "chat_server.h"

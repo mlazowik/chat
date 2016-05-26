@@ -2,8 +2,8 @@
 #include <vector>
 #include <string>
 #include <stdexcept>
-#include <string_parser.h>
-#include <number_parser.h>
+#include <options/string_parser.h>
+#include <options/number_parser.h>
 
 #include "chat_client.h"
 #include "../common/socket.h"

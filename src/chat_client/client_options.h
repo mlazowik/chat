@@ -1,7 +1,7 @@
 #ifndef CHAT_CLIENT_OPTIONS_H
 #define CHAT_CLIENT_OPTIONS_H
 
-#include <options.h>
+#include <options/options.h>
 
 class ClientOptions : public Options {
 public:
