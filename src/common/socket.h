@@ -4,8 +4,7 @@
 #include <string>
 #include <netdb.h>
 #include <stream/stream.h>
-
-#include "descriptor.h"
+#include <io/descriptor.h>
 
 class Socket : public Stream, public Descriptor {
 public:

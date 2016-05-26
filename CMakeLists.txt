@@ -41,28 +41,8 @@ target_link_libraries(
 include(CTest)
 enable_testing()
 
-set(OPTIONS_ROOT lib/options/options CACHE STRING "Options source root")
-
-include_directories(
-        ${PROJECT_SOURCE_DIR}/${OPTIONS_ROOT}
-)
-
 add_subdirectory(${PROJECT_SOURCE_DIR}/lib/options)
-
-set(STREAM_ROOT lib/stream/stream CACHE STRING "Stream source root")
-
-include_directories(
-        ${PROJECT_SOURCE_DIR}/${STREAM_ROOT}
-)
-
 add_subdirectory(${PROJECT_SOURCE_DIR}/lib/stream)
-
-set(IO_ROOT lib/io/io CACHE STRING "IO source root")
-
-include_directories(
-        ${PROJECT_SOURCE_DIR}/${IO_ROOT}
-)
-
 add_subdirectory(${PROJECT_SOURCE_DIR}/lib/io)
 
 set(SERVER_SOURCE_FILES
