@@ -3,8 +3,8 @@
 
 #include <set>
 #include <io/io_events.h>
+#include <networking/socket.h>
 
-#include "../common/socket.h"
 #include "common/connection.h"
 
 class ChatServer {

@@ -3,8 +3,7 @@
 
 #include <stream/stream_reader.h>
 #include <io/descriptor.h>
-
-#include "socket.h"
+#include <networking/socket.h>
 
 class invalid_message_error : public std::runtime_error {
 public:

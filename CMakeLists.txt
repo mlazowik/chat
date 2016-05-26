@@ -42,14 +42,10 @@ include(CTest)
 enable_testing()
 
 add_subdirectory(${PROJECT_SOURCE_DIR}/lib/options)
-add_subdirectory(${PROJECT_SOURCE_DIR}/lib/stream)
-add_subdirectory(${PROJECT_SOURCE_DIR}/lib/io)
 add_subdirectory(${PROJECT_SOURCE_DIR}/lib/networking)
 
 set(SERVER_SOURCE_FILES
         src/chat_server/server.cpp
-        src/common/socket.cpp
-        src/common/socket.h
         src/chat_server/chat_server.cpp
         src/chat_server/chat_server.h
         src/common/connection.cpp
@@ -65,8 +61,6 @@ target_link_libraries(server options stream io networking)
 
 set(CLIENT_SOURCE_FILES
         src/chat_client/client.cpp
-        src/common/socket.cpp
-        src/common/socket.h
         src/common/connection.cpp
         src/common/connection.h
         src/chat_client/chat_client.cpp

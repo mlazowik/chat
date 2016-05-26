@@ -4,9 +4,9 @@
 #include <stdexcept>
 #include <options/string_parser.h>
 #include <options/number_parser.h>
+#include <networking/socket.h>
 
 #include "chat_client.h"
-#include "../common/socket.h"
 #include "client_options.h"
 
 int main(int argc, char* argv[]) {

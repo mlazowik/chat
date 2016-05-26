@@ -3,7 +3,7 @@
 
 #include <common/connection.h>
 #include <io/io_events.h>
-#include "../common/socket.h"
+#include <networking/socket.h>
 
 class ChatClient {
 public:

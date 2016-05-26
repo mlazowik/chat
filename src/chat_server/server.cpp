@@ -2,10 +2,10 @@
 #include <stdexcept>
 #include <options/string_parser.h>
 #include <options/number_parser.h>
+#include <networking/socket.h>
 
 #include "server_options.h"
 #include "chat_server.h"
-#include "../common/socket.h"
 
 int main(int argc, char* argv[]) {
     const int DEFAULT_PORT = 20160;
