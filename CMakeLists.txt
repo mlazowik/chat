@@ -67,7 +67,9 @@ set(SERVER_SOURCE_FILES
         src/chat_server/chat_server.h
         src/common/connection.cpp
         src/common/connection.h
-        src/common/descriptor.h src/chat_server/server_options.cpp src/chat_server/server_options.h)
+        src/common/descriptor.h
+        src/chat_server/server_options.cpp
+        src/chat_server/server_options.h)
 
 add_executable(server ${SERVER_SOURCE_FILES})
 
@@ -87,7 +89,9 @@ set(CLIENT_SOURCE_FILES
         src/chat_client/chat_client.h
         src/common/connection.cpp
         src/common/connection.h
-        src/common/descriptor.h src/chat_client/client_options.cpp src/chat_client/client_options.h)
+        src/common/descriptor.h
+        src/chat_client/client_options.cpp
+        src/chat_client/client_options.h)
 
 add_executable(client ${CLIENT_SOURCE_FILES})
 
