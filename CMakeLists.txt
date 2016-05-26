@@ -44,6 +44,7 @@ enable_testing()
 add_subdirectory(${PROJECT_SOURCE_DIR}/lib/options)
 add_subdirectory(${PROJECT_SOURCE_DIR}/lib/stream)
 add_subdirectory(${PROJECT_SOURCE_DIR}/lib/io)
+add_subdirectory(${PROJECT_SOURCE_DIR}/lib/networking)
 
 set(SERVER_SOURCE_FILES
         src/chat_server/server.cpp
@@ -58,9 +59,9 @@ set(SERVER_SOURCE_FILES
 
 add_executable(server ${SERVER_SOURCE_FILES})
 
-add_dependencies(server options stream io)
+add_dependencies(server options stream io networking)
 
-target_link_libraries(server options stream io)
+target_link_libraries(server options stream io networking)
 
 set(CLIENT_SOURCE_FILES
         src/chat_client/client.cpp
@@ -77,6 +78,6 @@ set(CLIENT_SOURCE_FILES
 
 add_executable(client ${CLIENT_SOURCE_FILES})
 
-add_dependencies(client options stream io)
+add_dependencies(client options stream io networking)
 
-target_link_libraries(client options stream io)
+target_link_libraries(client options stream io networking)
