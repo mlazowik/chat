@@ -57,44 +57,46 @@ include_directories(
 
 add_subdirectory(${PROJECT_SOURCE_DIR}/lib/stream)
 
+set(IO_ROOT lib/io/io CACHE STRING "IO source root")
+
+include_directories(
+        ${PROJECT_SOURCE_DIR}/${IO_ROOT}
+)
+
+add_subdirectory(${PROJECT_SOURCE_DIR}/lib/io)
+
 set(SERVER_SOURCE_FILES
         src/chat_server/server.cpp
         src/common/socket.cpp
         src/common/socket.h
-        src/common/io_events.cpp
-        src/common/io_events.h
         src/chat_server/chat_server.cpp
         src/chat_server/chat_server.h
         src/common/connection.cpp
         src/common/connection.h
-        src/common/descriptor.h
         src/chat_server/server_options.cpp
         src/chat_server/server_options.h)
 
 add_executable(server ${SERVER_SOURCE_FILES})
 
-add_dependencies(server options stream)
+add_dependencies(server options stream io)
 
-target_link_libraries(server options stream)
+target_link_libraries(server options stream io)
 
 set(CLIENT_SOURCE_FILES
         src/chat_client/client.cpp
         src/common/socket.cpp
         src/common/socket.h
-        src/common/io_events.cpp
-        src/common/io_events.h
         src/common/connection.cpp
         src/common/connection.h
         src/chat_client/chat_client.cpp
         src/chat_client/chat_client.h
         src/common/connection.cpp
         src/common/connection.h
-        src/common/descriptor.h
         src/chat_client/client_options.cpp
         src/chat_client/client_options.h)
 
 add_executable(client ${CLIENT_SOURCE_FILES})
 
-add_dependencies(client options stream)
+add_dependencies(client options stream io)
 
-target_link_libraries(client options stream)
+target_link_libraries(client options stream io)

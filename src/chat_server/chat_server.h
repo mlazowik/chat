@@ -2,9 +2,9 @@
 #define CHAT_CHAT_SERVER_H
 
 #include <set>
+#include <io/io_events.h>
 
 #include "../common/socket.h"
-#include "../common/io_events.h"
 #include "common/connection.h"
 
 class ChatServer {

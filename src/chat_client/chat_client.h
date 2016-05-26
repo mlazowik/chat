@@ -2,8 +2,8 @@
 #define CHAT_CHAT_CLIENT_H
 
 #include <common/connection.h>
+#include <io/io_events.h>
 #include "../common/socket.h"
-#include "../common/io_events.h"
 
 class ChatClient {
 public:
