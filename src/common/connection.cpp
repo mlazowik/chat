@@ -86,18 +86,18 @@ Reader* Connection::getMessageReader() {
     });
 }
 
-bool Connection::operator==(const Desciptor &rhs) const {
+bool Connection::operator==(const Descriptor &rhs) const {
     return this->getDescriptor() == rhs.getDescriptor();
 }
 
-bool Connection::operator!=(const Desciptor &rhs) const {
+bool Connection::operator!=(const Descriptor &rhs) const {
     return !(*this == rhs);
 }
 
-bool Connection::operator<(const Desciptor &rhs) const {
+bool Connection::operator<(const Descriptor &rhs) const {
     return this->getDescriptor() < rhs.getDescriptor();
 }
 
-bool Connection::operator>(const Desciptor &rhs) const {
+bool Connection::operator>(const Descriptor &rhs) const {
     return !(*this < rhs || *this == rhs);
 }

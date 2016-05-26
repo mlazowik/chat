@@ -16,8 +16,8 @@ IOEvents::IOEvents(size_t size) {
     }
 }
 
-void IOEvents::registerConnection(Connection *connection,
-                                  std::function<void(Connection *,
+void IOEvents::registerDescriptor(Descriptor *descriptor,
+                                  std::function<void(Descriptor *,
                                                      short)> callback) {
     size_t i = 0;
     struct pollfd *pollEvent;
@@ -33,23 +33,23 @@ void IOEvents::registerConnection(Connection *connection,
         throw std::runtime_error("too many descriptors");
     }
 
-    pollEvent->fd = connection->getDescriptor();
+    pollEvent->fd = descriptor->getDescriptor();
     this->callbacks[i] = callback;
-    this->connections.emplace(i, connection);
+    this->connections.emplace(i, descriptor);
 }
 
-void IOEvents::deregisterConnection(Connection *connection) {
+void IOEvents::removeDescriptor(Descriptor *descriptor) {
     size_t i = 0;
     struct pollfd *pollEvent;
 
     do {
         pollEvent = this->pollEvents + i;
         i++;
-    } while (i < this->size && pollEvent->fd != connection->getDescriptor());
+    } while (i < this->size && pollEvent->fd != descriptor->getDescriptor());
 
     i--;
 
-    if (pollEvent->fd != connection->getDescriptor()) {
+    if (pollEvent->fd != descriptor->getDescriptor()) {
         throw std::logic_error("no such descriptor");
     }
 

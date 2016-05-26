@@ -13,7 +13,7 @@ public:
     }
 };
 
-class Connection : public Desciptor {
+class Connection : public Descriptor {
 public:
     Connection();
     Connection(Socket &socket);
@@ -21,10 +21,10 @@ public:
     int getDescriptor() const;
     void destroy();
 
-    bool operator==(const Desciptor &rhs) const;
-    bool operator!=(const Desciptor &rhs) const;
-    bool operator<(const Desciptor &rhs) const;
-    bool operator>(const Desciptor &rhs) const;
+    bool operator==(const Descriptor &rhs) const;
+    bool operator!=(const Descriptor &rhs) const;
+    bool operator<(const Descriptor &rhs) const;
+    bool operator>(const Descriptor &rhs) const;
 
     void read();
     bool finishedReading() const;

@@ -11,9 +11,9 @@ ChatServer::ChatServer(Socket &serverSocket, IOEvents &events)
 void ChatServer::run() {
     Connection *serverConnection = new Connection(this->serverSocket);
 
-    this->events.registerConnection(
+    this->events.registerDescriptor(
             serverConnection,
-            [&](Connection *connection, short revents) {
+            [&](Descriptor *connection, short revents) {
                 this->handleServerEvent(serverConnection, revents);
             }
     );
@@ -31,10 +31,10 @@ void ChatServer::handleServerEvent(Connection *connection, short revents) {
     clients.insert(client);
 
     try {
-        this->events.registerConnection(
+        this->events.registerDescriptor(
                 client,
-                [&](Connection *connection, short revents) {
-                    this->handleClientEvent(connection, revents);
+                [&](Descriptor *descriptor, short revents) {
+                    this->handleClientEvent((Connection *)descriptor, revents);
                 }
         );
     } catch (std::runtime_error &ex) {
@@ -70,7 +70,7 @@ void ChatServer::handleClientEvent(Connection *connection, short revents) {
 }
 
 void ChatServer::disconnectClient(Connection *connection) {
-    this->events.deregisterConnection(connection);
+    this->events.removeDescriptor(connection);
     connection->destroy();
     this->clients.erase(connection);
     delete connection;

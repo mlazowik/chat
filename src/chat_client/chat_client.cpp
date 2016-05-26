@@ -7,28 +7,28 @@
 
 ChatClient::ChatClient(Socket &serverSocket, IOEvents &events)
         : serverSocket(serverSocket), events(events) {
-    this->clientSocekt = new Socket(fileno(stdin));
+    this->clientSocket = new Socket(fileno(stdin));
 }
 
 ChatClient::~ChatClient() {
-    delete this->clientSocekt;
+    delete this->clientSocket;
 }
 
 void ChatClient::run() {
     this->server = new Connection(this->serverSocket);
-    this->client = new Connection(*this->clientSocekt);
+    this->client = new Connection(*this->clientSocket);
 
-    this->events.registerConnection(
+    this->events.registerDescriptor(
             this->server,
-            [&](Connection *connection, short revents) {
-                this->handleServerEvent(connection, revents);
+            [&](Descriptor *connection, short revents) {
+                this->handleServerEvent((Connection *) connection, revents);
             }
     );
 
-    this->events.registerConnection(
+    this->events.registerDescriptor(
             this->client,
-            [&](Connection *connection, short revents) {
-                this->handleClientEvent(connection, revents);
+            [&](Descriptor *connection, short revents) {
+                this->handleClientEvent((Connection *) connection, revents);
             }
     );
 
@@ -86,7 +86,7 @@ void ChatClient::handleClientEvent(Connection *connection, short revents) {
 }
 
 void ChatClient::disconnectServer(Connection *connection) {
-    this->events.deregisterConnection(connection);
+    this->events.removeDescriptor(connection);
     connection->destroy();
     delete connection;
 }
