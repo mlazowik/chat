@@ -6,18 +6,11 @@
 
 #include "connection.h"
 
-Connection::Connection() {}
+Connection::Connection() : Descriptor(0) {}
 
-Connection::Connection(Socket &socket) : socket(socket) {
+Connection::Connection(Socket &socket)
+        : Descriptor(socket.getDescriptor()), socket(socket) {
     this->reading = Reading::NOTHING;
-}
-
-int Connection::getDescriptor() const {
-    return this->socket.getDescriptor();
-}
-
-void Connection::destroy() {
-    this->socket.destroy();
 }
 
 void Connection::read() {
@@ -84,20 +77,4 @@ Reader* Connection::getMessageReader() {
     return new StringReader(this->socket, [&](std::string value) {
         return value.length() == this->messageLength;
     });
-}
-
-bool Connection::operator==(const Descriptor &rhs) const {
-    return this->getDescriptor() == rhs.getDescriptor();
-}
-
-bool Connection::operator!=(const Descriptor &rhs) const {
-    return !(*this == rhs);
-}
-
-bool Connection::operator<(const Descriptor &rhs) const {
-    return this->getDescriptor() < rhs.getDescriptor();
-}
-
-bool Connection::operator>(const Descriptor &rhs) const {
-    return !(*this < rhs || *this == rhs);
 }

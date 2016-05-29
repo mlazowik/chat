@@ -17,14 +17,6 @@ public:
     Connection();
     Connection(Socket &socket);
 
-    int getDescriptor() const;
-    void destroy();
-
-    bool operator==(const Descriptor &rhs) const;
-    bool operator!=(const Descriptor &rhs) const;
-    bool operator<(const Descriptor &rhs) const;
-    bool operator>(const Descriptor &rhs) const;
-
     void read();
     bool finishedReading() const;
     std::string getMessage() const;
